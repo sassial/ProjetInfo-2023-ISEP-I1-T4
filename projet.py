@@ -2,6 +2,7 @@ from initPerso import heros, vilains
 from menus import menuPrincipal, menuSauvegarde
 from combat import bataille
 
+
 class Game:
     def __init__(self):
         self.vilains = vilains

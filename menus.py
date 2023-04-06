@@ -1,5 +1,6 @@
 import pickle
 
+
 def affichage(hdict, vliste):
     # Les titres du tableau
     print(f"{'Nom' : <25}{'Classe' : ^20}{'Vie' : ^10}{'Attaque Principal' : ^20}{'Attaque Secondaire' : ^20}{'Guerison' : >10}")

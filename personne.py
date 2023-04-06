@@ -1,5 +1,6 @@
 import random
 
+
 class personnage:
     #tous les membres de cette classe sont initialisés avec les attributs spécifiques "nom", "points de vie", "points d'attaque", 
     def __init__(self, nom, classe, points_de_vie, points_dattaque_principaux, points_dattaque_secondaires, points_de_guerison):
