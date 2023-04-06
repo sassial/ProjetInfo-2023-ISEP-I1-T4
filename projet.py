@@ -1,6 +1,7 @@
 import pickle
 from personne import personnage
-from initVague import initVagueTrolls
+from initPerso import heros, vilains
+from menus import affichage, menuSauvegarde
 
 
 class Game:
@@ -8,30 +9,20 @@ class Game:
 
     def __init__(self):
         # Les méchants sont initialisés dans une liste de listes, chaque liste agissant comme une vague d'ennemis
-        self.vilains = [[], [], [], [], []]
-        for i in range(3):
-            self.vilains[i] = initVagueTrolls(self.vilains[i], i + 3, (i * (i + 1)) // 2 + 2 * i)
-
-        self.vilains[3].append(personnage("Troll le Troll", "Troll Guerrier", 10, 4, 0, 0))
-        self.vilains[3].append(personnage("Spyro le Petit Dragon", "Petit Dragon", 8, 5, 1, 0))
-
-        self.vilains[4].append(personnage("Smaug le Dragon", "Dragon", 15, 6, 2, 0))
+        self.vilains = vilains
 
         # Les héros sont initialisés dans un dictionnaire.
-        self.heros = {"Guerrier": personnage("Ares le Guerrier", "Guerrier", 10, 5, 0, 0),
-                      "Chasseur": personnage("Artemis le Chasseur", "Chasseur", 10, 3, 0, 0),
-                      "Guerisseur": personnage("Apollo le Guerisseur", "Guerisseur", 10, 1, 0, 2),
-                      "Mage": personnage("Athena le Mage", "Mage", 10, 4, 2, 0)}
+        self.heros = heros
 
     def run(self):
         self.menu()
-        # Les héros doivent combattre 4 vagues d'ennemis pour terminer le jeu.
-        for i in range(4):
+        # Les héros doivent combattre tout les vagues d'ennemis pour terminer le jeu.
+        for i in range(len(self.vilains)):
             self.battle()
-            self.choisirActions()
+            self.sauvegarde()
 
     def menu(self):
-        # Afficher les choix.
+     # Afficher les choix.
         print("\n#1: Nouveau Jeu", end="")
         print("\n#2: Charger un Jeu", end="")
         print("\n#3: Quitter", end="")
@@ -44,7 +35,8 @@ class Game:
             elif choix == 2:
                 with open('savefile.pickle', 'rb') as f:
                     self.heros = pickle.load(f)
-                print("\nPartie chargée!")
+                    self.vilains = pickle.load(f)
+                print("\nPartie chargée!\n")
                 break
             elif choix == 3:
                 exit()
@@ -63,11 +55,11 @@ class Game:
             # Pour chaque héros de l'équipe...
             for h1, h2 in self.heros.items():
                 if h2.classe == "Guerisseur":
-                    h = self.choisirHeros(h2)
+                    h = self.soignerHeros(h2)
                     h2.guerir(self.heros[h])
 
                 # Le héros choisit le méchant.
-                v = self.choisirMechant(h2)
+                v = self.combattreMechant(h2)
 
                 # Le héros attaque le méchant.
                 if h2.classe == "Mage":
@@ -110,7 +102,7 @@ class Game:
         else:
             print("\nLes méchants ont gagné...")
 
-    def choisirMechant(self, hero):
+    def combattreMechant(self, hero):
         # Afficher les choix.
         for i, v in enumerate(self.vilains[0]):
             print("\n#", i + 1, ":", v.nom, end="")
@@ -126,7 +118,7 @@ class Game:
                 pass
             print("Saisie non valide, veuillez réessayer.")
 
-    def choisirHeros(self, hero):
+    def soignerHeros(self, hero):
         # Afficher les choix.
         for i, h in enumerate(self.heros):
             print("\n#", i + 1, ":", self.heros[h].nom, end="")
@@ -142,39 +134,10 @@ class Game:
                 pass
             print("Saisie non valide, veuillez réessayer.")
 
-    def choisirActions(self):
-        # Afficher les choix.
-        print("\n#1: Continuer", end="")
-        print("\n#2: Sauvegarder", end="")
-        print("\n#3: Quitter", end="")
-
-        # Demander à l'utilisateur de faire un choix
-        while True:
-            choix = int(input("\n=> "))
-            if choix == 1:
-                break
-            elif choix == 2:
-                with open('savefile.pickle', 'wb') as f:
-                    pickle.dump(self.heros, f, protocol=pickle.HIGHEST_PROTOCOL)
-                print("\nPartie sauvegardée!")
-            elif choix == 3:
-                exit()
-            else:
-                print("Saisie non valide, veuillez réessayer.")
+    def sauvegarde(self):
+        menuSauvegarde(self.heros, self.vilains)
 
     def printCondition(self):
-        print(
-            f"{'Nom' : <25}{'Classe' : ^20}{'Vie' : ^10}{'Attaque Principal' : ^20}{'Attaque Secondaire' : ^20}{'Guerison' : >10}")
-
-        print()
-        for a in self.heros.values():
-            print(
-                f"{a.nom : <25}{a.classe : ^20}{a.points_de_vie : ^10}{a.points_dattaque_principaux : ^20}{a.points_dattaque_secondaires : ^20}{a.points_de_guerison : >10}")
-
-        print()
-        for a in self.vilains[0]:
-            print(
-                f"{a.nom : <25}{a.classe : ^20}{a.points_de_vie : ^10}{a.points_dattaque_principaux : ^20}{a.points_dattaque_secondaires : ^20}{a.points_de_guerison : >10}")
-
+        affichage(self.heros, self.vilains)
 
 Game().run()
