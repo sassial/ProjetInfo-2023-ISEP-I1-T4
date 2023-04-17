@@ -18,7 +18,7 @@ def affichage(hdict, vliste):
 def menuPrincipal(hdict, vliste):
     # Afficher les choix.
     print("\n#1: Nouveau Jeu", end="")
-    print("\n#2: Charger un Jeu", end="")
+    print("\n#2: Charger une Partie", end="")
     print("\n#3: Quitter", end="")
 
     # Demander à l'utilisateur de faire un choix
